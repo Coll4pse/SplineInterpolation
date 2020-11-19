@@ -24,6 +24,8 @@ namespace SplineInterpolation
         private List<TextBox> textBoxesX = new List<TextBox>();
         private List<TextBox> textBoxesY = new List<TextBox>();
         private List<TextBlock> answers = new List<TextBlock>();
+        private Polynomial[] resPolynomials;
+        private double[] x;
 
         public MainWindow()
         {
@@ -74,6 +76,11 @@ namespace SplineInterpolation
                 answers.Add(textBlock);
                 answerPanel.Children.Add(textBlock);
             }
+
+            customX.IsEnabled = false;
+            customX.Text = string.Empty;
+            evaluateFButton.IsEnabled = false;
+            customF.Text = string.Empty;
         }
 
         private void OnCounterChange(object sender, RoutedEventArgs args)
@@ -86,24 +93,54 @@ namespace SplineInterpolation
             Evaluate();
         }
 
+        private void OnClickEvaluateXButton(object sender, RoutedEventArgs args)
+        {
+            try
+            {
+                var inputX = double.Parse(customX.Text.Replace(',', '.'),
+                    CultureInfo.InvariantCulture);
+                for (int i = 0; i < x.Length - 1; i++)
+                {
+                    if (!(inputX >= x[i]) || !(inputX < x[i + 1])) continue;
+                    customF.Text = resPolynomials[i].Evaluate(inputX).ToString("F");
+                    return;
+                }
+
+                MessageBox.Show("Значение должно быть в интервале точек.", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Неккоретные вводные данные! Должны быть только действительные числа",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         private void Evaluate()
         {
             try
             {
-                var x = textBoxesX
-                    .Select(box => double.Parse(box.Text.Replace(',', '.'), CultureInfo.InvariantCulture))
+                x = textBoxesX
+                    .Select(box => double.Parse(box.Text.Replace(',', '.'),
+                        CultureInfo.InvariantCulture))
                     .ToArray();
                 var y = textBoxesY
-                    .Select(box => double.Parse(box.Text.Replace(',', '.'), CultureInfo.InvariantCulture))
+                    .Select(box => double.Parse(box.Text.Replace(',', '.'),
+                        CultureInfo.InvariantCulture))
                     .ToArray();
 
-                var result = Interpolation.Evaluate(x, y);
-                for (int i = 0; i < result.Length; i++)
+                resPolynomials = Interpolation.Evaluate(x, y);
+                for (int i = 0; i < resPolynomials.Length; i++)
                 {
-                    answers[i].Text = result[i].ToString();
+                    answers[i].Text = resPolynomials[i].ToString();
                 }
 
-                CheckSplines(result, x, y);
+                evaluateFButton.IsEnabled = true;
+                customX.IsEnabled = true;
+                customX.Text = string.Empty;
+                customF.Text = string.Empty;
+                
+                CheckSplines(resPolynomials, x, y);
             }
             catch (FormatException)
             {

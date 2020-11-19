@@ -51,6 +51,11 @@
             <Button Width="150" Height="30" DockPanel.Dock = "Top" Click="OnClickEvaluateButton">Интерполировать</Button>
             
             <xctk:IntegerUpDown Minimum="3" Maximum="15" Value="3" x:Name="counter" DockPanel.Dock="Top"></xctk:IntegerUpDown>
+            
+            <Button x:Name="evaluateFButton" Width="150" Height="30" DockPanel.Dock="Top" IsEnabled="False" Click="OnClickEvaluateXButton">Вычислить в точке</Button>
+            <TextBox x:Name="customX" Height="30" DockPanel.Dock="Top" VerticalAlignment="Center" TextAlignment="Center" IsEnabled="False"></TextBox>
+            <TextBlock DockPanel.Dock="Top" VerticalAlignment="Center" TextAlignment="Center">f(x) = </TextBlock>
+            <TextBlock x:Name="customF"  Height="30" DockPanel.Dock="Top" VerticalAlignment="Center" TextAlignment="Center"></TextBlock>
         </DockPanel>
         
         <StackPanel x:Name="answerPanel" Grid.Column="2">
