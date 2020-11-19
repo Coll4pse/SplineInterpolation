@@ -91,10 +91,10 @@ namespace SplineInterpolation
             try
             {
                 var x = textBoxesX
-                    .Select(box => double.Parse(box.Text.Replace(',', ','), CultureInfo.InvariantCulture))
+                    .Select(box => double.Parse(box.Text.Replace(',', '.'), CultureInfo.InvariantCulture))
                     .ToArray();
                 var y = textBoxesY
-                    .Select(box => double.Parse(box.Text.Replace(',', ','), CultureInfo.InvariantCulture))
+                    .Select(box => double.Parse(box.Text.Replace(',', '.'), CultureInfo.InvariantCulture))
                     .ToArray();
 
                 var result = Interpolation.Evaluate(x, y);
